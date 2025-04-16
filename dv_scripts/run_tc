@@ -1,0 +1,62 @@
+#!/usr/bin/python3
+# -*-coding :utf-8 -*-
+
+import re
+import sys
+import os
+import cmp
+import comm
+
+run_cmd = ''
+tc_mode = ''
+tc_name = ''
+all_cfg = ''
+rst_cfg = ''
+skipc = 0
+is_help = 0
+
+help_info = '''use info:
+run_tc and keyword       
+-skipc : skip compile  
+tc=    : tell me tc_name 
+mode=  : which sim mode 
+wave=  : wave name  
+'''
+
+for part in sys.argv:
+    #print(part)
+    if "tc=" in part:
+        tc_name_l = re.findall("tc=(.*?)$",part)
+        tc_name   = "".join(tc_name_l)
+        #print(tc_name)
+    if "mode=" in part:
+        tc_mode_l = re.findall("mode=(.*?)$",part)
+        tc_mode   = "".join(tc_mode_l)
+        tc_mode   = tc_mode + '/'
+    if "wave=" in part:
+        tc_wave_l = re.findall("wave=(.*?)$",part)
+        tc_wave   = "".join(tc_wave_l)
+    if "-skipc" in part:
+        skipc = 1
+    if "-help" in part:
+        print(help_info)
+        skipc = 1
+        is_help = 1
+    if "cfg=" in part:
+        part = part.replace('cfg=','')	
+        all_cfg = all_cfg + comm.get_sim_cfg(part)
+    else :
+        rst_cfg = rst_cfg + ' ' + part
+        
+
+cmp_cmd = cmp.get_cmp_cmd()
+run_cmd = './simv -ucli -do wave.do +fsdbfile+'+ tc_mode +tc_name +'.fsdb'+' +UVM_TESTNAME='+ tc_name +' >'+ tc_mode +tc_name + '.log' + ' ' + all_cfg +' ' +rst_cfg
+
+#print(run_cmd)
+
+if skipc == 0 :
+    os.system(cmp_cmd)
+    os.system(run_cmd)
+else :
+    if is_help == 0:
+    	os.system(run_cmd)

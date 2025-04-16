@@ -1,0 +1,9 @@
+#!/usr/bin/python3
+# -*-coding :utf-8 -*-
+
+import os
+import cmp
+
+cmp_cmd = cmp.get_cmp_cmd()
+
+os.system(cmp_cmd)

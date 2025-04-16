@@ -1,0 +1,1 @@
+verdi -daidir simv.daidir -ssf $0
